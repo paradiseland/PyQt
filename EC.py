@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 # do some modification
 # try git in vscode
+# you finished the work by git in VScode [from cxw_dell]
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
