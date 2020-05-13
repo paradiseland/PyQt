@@ -5,10 +5,7 @@
 # Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
-# do some modification
-# try git in vscode
-# you finished the work by git in VScode [from cxw_dell]
-#  yes i pulled newer file which modified by my dell. from github.[in my mac]
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
