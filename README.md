@@ -1,2 +1,0 @@
-# PyQt
-Pyqt exercise
