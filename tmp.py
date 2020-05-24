@@ -18,7 +18,7 @@ class MyWindow(QtWidgets.QWidget):
     fileName1, filetype = QFileDialog.getOpenFileName(self,
                   "选取文件",
                   "./",
-                  "All Files (*);;Text Files (*.txt)")  #设置文件扩展名过滤,注意用双分号间隔
+                  "Excel Files (*.xlsx);;All Files (*)")  #设置文件扩展名过滤,注意用双分号间隔
     print(fileName1,filetype)
  
     files, ok1 = QFileDialog.getOpenFileNames(self,

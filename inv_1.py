@@ -80,6 +80,8 @@ class Ui_MainWindow(object):
         self.calendarWidget.setNavigationBarVisible(True)
         self.calendarWidget.setDateEditEnabled(True)
         self.calendarWidget.setObjectName("calendarWidget")
+        self.calendarWidget.clicked[QtCore.QDate].connect(self.showtime)
+
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(220, 110, 451, 131))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
@@ -93,8 +95,10 @@ class Ui_MainWindow(object):
         self.textEdit_2 = QtWidgets.QTextEdit(self.verticalLayoutWidget_2)
         self.textEdit_2.setObjectName("textEdit_2")
         self.verticalLayout_4.addWidget(self.textEdit_2)
+
         self.textEdit_3 = QtWidgets.QTextEdit(self.verticalLayoutWidget_2)
         self.textEdit_3.setObjectName("textEdit_3")
+        self.textEdit_3.document().setMaximumBlockCount(10)
         self.verticalLayout_4.addWidget(self.textEdit_3)
         self.horizontalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(30, 100, 181, 151))
@@ -111,6 +115,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.btn_inputdata.setFont(font)
         self.btn_inputdata.setObjectName("btn_inputdata")
+        self.btn_inputdata.clicked.connect(self.get_outbound_file)
         self.verticalLayout_3.addWidget(self.btn_inputdata)
         self.btn_inputinitinv = QtWidgets.QPushButton(self.horizontalLayoutWidget_2)
         font = QtGui.QFont()
@@ -118,6 +123,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.btn_inputinitinv.setFont(font)
         self.btn_inputinitinv.setObjectName("btn_inputinitinv")
+        self.btn_inputinitinv.clicked.connect(self.get_initinv_file)
         self.verticalLayout_3.addWidget(self.btn_inputinitinv)
         self.btn_timeselect = QtWidgets.QPushButton(self.horizontalLayoutWidget_2)
         font = QtGui.QFont()
@@ -125,6 +131,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.btn_timeselect.setFont(font)
         self.btn_timeselect.setObjectName("btn_timeselect")
+        self.btn_timeselect.clicked.connect(self.textEdit_3.clear)
         self.verticalLayout_3.addWidget(self.btn_timeselect)
         self.horizontalLayout_3.addLayout(self.verticalLayout_3)
         self.horizontalLayoutWidget_3 = QtWidgets.QWidget(self.centralwidget)
@@ -144,6 +151,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.btn_datademo.setFont(font)
         self.btn_datademo.setObjectName("btn_datademo")
+        self.btn_datademo.clicked.connect(self.show_Datademo)
         self.horizontalLayout_4.addWidget(self.btn_datademo)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem)
@@ -182,10 +190,51 @@ class Ui_MainWindow(object):
         self.label_evaluation.setText(_translate("MainWindow", "效果评估"))
         self.btn_inputdata.setText(_translate("MainWindow", "导入出库数据："))
         self.btn_inputinitinv.setText(_translate("MainWindow", "导入初始库存数据："))
-        self.btn_timeselect.setText(_translate("MainWindow", "时间段选择："))
+        self.btn_timeselect.setText(_translate("MainWindow", "时间段选择[清空]："))
         self.btn_datademo.setText(_translate("MainWindow", "Data Demo"))
         self.btn_next.setText(_translate("MainWindow", "下一步"))
+
+    def get_outbound_file(self):
+        fileName1, filetype = QtWidgets.QFileDialog.getOpenFileName(caption="选取文件", directory="../", filter="Excel Files (*.xlsx)") 
+        print(fileName1, filetype)
+        self.textEdit.setText(fileName1)
+        self.outbound_dir = fileName1
+        print(self.outbound_dir)
+
+    def get_initinv_file(self):
+        fileName2, filetype2 = QtWidgets.QFileDialog.getOpenFileName(caption="选取文件", directory="../", filter="Excel Files (*.xlsx)") 
+        print(fileName2, filetype2)
+        self.textEdit.setText(fileName2)
+        self.initinv_dir = fileName2
+        print(self.initinv_dir)
     
+    def showtime(self, date):
+        cur = self.textEdit_3.toPlainText()
+        add = date.toString("yyyy-MM")
+        self.time_selected = []
+        if len(cur) > 0 and len(cur) < 8:
+            self.textEdit_3.setText(cur+'--'+add)
+            self.time_selected = [cur, add]
+        elif len(cur) > 15:
+            self.time_selected = [cur, add]
+        else:
+            self.textEdit_3.setText(add)
+        print(len(cur))
+        print(self.time_selected)
+    
+    def show_Datademo(self):
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile("/Users/cxw/Learn/3_Coding/Python/SEIM/Inventory_Project/data/outbound.xlsx"))
+
+
+# class QFile(QtWidgets.QWidget):
+#     def __init__():
+#         super(QFile).__init__()
+#         self.get_file()
+    
+#     def get_file(self):
+#         fileName1, filetype = QtWidgets.QFileDialog.getOpenFileName(self, "选取文件", "./", "Excel Files (*.xls)") 
+#         print(fileName1, filetype)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
