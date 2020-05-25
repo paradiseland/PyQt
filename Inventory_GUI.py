@@ -1,13 +1,16 @@
+import sys
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTextEdit, QAction, QFileDialog
+from PyQt5.QtGui import QIcon
+
+
 class OpenFile(QMainWindow):
 
     def __init__(self):
         super().__init__()
 
         self.initUI()
-        
 
-
-    def initUI(self):      
+    def initUI(self):
 
         self.textEdit = QTextEdit()
         self.setCentralWidget(self.textEdit)
