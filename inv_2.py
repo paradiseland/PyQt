@@ -6,9 +6,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from matplotlib.backends.backend_qt5agg import (
+        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
+from matplotlib.backends.qt_compat import QtCore, QtWidgets
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -59,7 +63,7 @@ class Ui_MainWindow(object):
         self.label_evaluation.setObjectName("label_evaluation")
         self.horizontalLayout_2.addWidget(self.label_evaluation)
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(90, 90, 111, 21))
+        self.label.setGeometry(QtCore.QRect(90, 90, 200, 21))
         self.label.setObjectName("label")
         self.horizontalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(70, 470, 631, 31))
@@ -115,6 +119,18 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.figure = Mydemo(width=5, height=4, dpi=100)
+        
+        # 将实例化对象self.figure1添加到垂直布局layout中
+        self.lay = QtWidgets.QVBoxLayout()
+        self.lay.addWidget(self.figure)
+        
+
+        # 在对象的axes和axes1画板上作图
+        data = list(range(1000))
+        self.figure.axes.plot(data)
+        self.figure.axes1.plot(data)
+
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -129,3 +145,45 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "s,S 策略结果："))
         self.btn_datademo_2.setText(_translate("MainWindow", "上一步"))
         self.btn_next_2.setText(_translate("MainWindow", "下一步"))
+
+
+class Mydemo(FigureCanvas):
+
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+
+        plt.rcParams['font.family'] = ['SimHei']    # 更换字体使中文显示正常
+        plt.rcParams['axes.unicode_minus'] = False    # 用来正常显示负号
+
+        # 创建绘图对象，就像matlab里创建一个新的窗口那样
+
+        self.fig = Figure(figsize=(width, height), dpi=dpi) 
+
+        # 紧接着在这个新的窗口加上一个子图，也就是实际画图的地方
+        # 看到subplot我想你也明白，可以在这里添加多个子图，并且规定子图的位置，       
+        # 方法和matlab的subplot一摸一样，为了演示我加了一个新的axes1
+
+        self.axes = self.fig.add_subplot(2, 2, 1)
+        self.axes1 = self.fig.add_subplot(2, 2, 4)
+
+        
+        # 下面这个是画新图后不保留上次的图形，但这个代码似乎有问题报错了，先注释掉
+        # self.axes.hold(False) 
+
+        FigureCanvas.__init__(self, self.fig)
+        self.setParent(parent)
+
+
+        '''定义FigureCanvas的尺寸策略，这部分的意思是设置FigureCanvas，使之尽可能的向外填充空间。'''
+        FigureCanvas.setSizePolicy(self, 
+                                       QtWidgets.QSizePolicy.Expanding, 
+                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    Mainwindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(Mainwindow)
+    Mainwindow.show()
+    sys.exit(app.exec_())

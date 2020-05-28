@@ -168,7 +168,7 @@ class Ui_MainWindow(object):
         font.setWeight(50)
         self.btn_next.setFont(font)
         self.btn_next.setObjectName("btn_next")
-        self.btn_next.clicked.connect(self.step2)
+        # self.btn_next.clicked.connect(self.step2)
         self.horizontalLayout_4.addWidget(self.btn_next)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -226,7 +226,7 @@ class Ui_MainWindow(object):
     def show_Datademo(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile("/Users/cxw/Learn/3_Coding/Python/SEIM/Inventory_Project/data/outbound.xlsx"))
 
-    def step2(self):
+    # def step2(self):
         
 
 # class QFile(QtWidgets.QWidget):

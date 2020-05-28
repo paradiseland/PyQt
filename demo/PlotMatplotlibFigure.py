@@ -1,61 +1,40 @@
+from PyQt5 import QtCore, QtWidgets, QtGui
 import sys
-import time
-
-import numpy as np
-from matplotlib.backends.backend_qt5agg import (
-        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
-from matplotlib.backends.qt_compat import QtCore, QtWidgets
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 
-class ApplicationWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self._main = QtWidgets.QWidget()
-        self.setCentralWidget(self._main)
-        layout = QtWidgets.QVBoxLayout(self._main)
+class My_Main_window(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        super(My_Main_window, self).__init__(parent)
+        # 重新调整大小
+        self.resize(800, 659)
+        # 添加菜单中的按钮
+        self.btn = QtWidgets.QPushButton("plot")
 
-        static_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        layout.addWidget(static_canvas)
-        self.addToolBar(NavigationToolbar(static_canvas, self))
+        # 添加事件
+        self.btn.clicked.connect(self.plot_)
+        self.setCentralWidget(QtWidgets.QWidget())
 
-        dynamic_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        layout.addWidget(dynamic_canvas)
-        self.addToolBar(QtCore.Qt.BottomToolBarArea,
-                        NavigationToolbar(dynamic_canvas, self))
-
-        self._static_ax = static_canvas.figure.subplots()
-        t = np.linspace(0, 10, 501)
-        self._static_ax.plot(t, np.tan(t), ".")
-
-        self._dynamic_ax = dynamic_canvas.figure.subplots()
-        self._timer = dynamic_canvas.new_timer(
-            50, [(self._update_canvas, (), {})])
-        self._timer.start()
-
-    def _update_canvas(self):
-        self._dynamic_ax.clear()
-        t = np.linspace(0, 10, 101)
-        # Use fixed vertical limits to prevent autoscaling changing the scale
-        # of the axis.
-        self._dynamic_ax.set_ylim(-1.1, 1.1)
-        # Shift the sinusoid as a function of time.
-        self._dynamic_ax.plot(t, np.sin(t + time.time()))
-        self._dynamic_ax.figure.canvas.draw()
+    # 绘图方法
+    def plot_(self):
+        # 清屏
+        plt.cla()
+        # 获取绘图并绘制
+        fig = plt.figure()
+        ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        ax.set_xlim([-1, 6])
+        ax.set_ylim([-1, 6])
+        ax.plot([0, 1, 2, 3, 4, 5], 'o--')
+        cavans = FigureCanvas(fig)
+        # 将绘制好的图像设置为中心 Widget
+        self.setCentralWidget(cavans)
 
 
-if __name__ == "__main__":
-    # Check whether there is already a running QApplication (e.g., if running
-    # from an IDE).
-    qapp = QtWidgets.QApplication.instance()
-    if not qapp:
-        qapp = QtWidgets.QApplication(sys.argv)
-
-    app = ApplicationWindow()
-    app.show()
-    app.activateWindow()
-    app.raise_()
-    qapp.exec_()
-
-
-    
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    main_window = My_Main_window()
+    main_window.show()
+    app.exec()
